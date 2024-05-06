@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pegawai Apotek</title>
+</head>
+<body>
+
+<table id="modul_table" border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Judul</th>
+            <th>Deskripsi</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+// Panggil data dari server menggunakan AJAX
+var xhr = new XMLHttpRequest();
+xhr.open("GET", "get_data.php", true);
+xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        var data = JSON.parse(xhr.responseText);
+        populateTable(data);
+    }
+};
+xhr.send();
+
+// Fungsi untuk menampilkan data dalam tabel
+function populateTable(data) {
+    var tableBody = document.querySelector("#modul_table tbody");
+    tableBody.innerHTML = "";
+    data.forEach(function(row) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + row.id + "</td><td>" + row.judul + "</td><td>" + row.deskripsi + "</td><td><button onclick='hapusData(" + row.id + ")'>Hapus</button></td>";
+        tableBody.appendChild(tr);
+    });
+}
+
+// Fungsi untuk menghapus data menggunakan AJAX
+function hapusData(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "hapus_modul.php?id=" + id, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // Jika berhasil hapus, panggil ulang data
+            xhr.open("GET", "get_modul.php", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    populateTable(data);
+                }
+            };
+            xhr.send();
+        }
+    };
+    xhr.send();
+}
+</script>
+
+</body>
+</html>
