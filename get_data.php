@@ -2,7 +2,7 @@
 // Koneksi ke database
 $servername = "localhost";
 $username = "root";
-$password = " ";
+$password = "";
 $database = "pengelolaan_pegawai";
 
 $conn = new mysqli($servername, $username, $password, $database);
